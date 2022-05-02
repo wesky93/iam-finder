@@ -1,5 +1,6 @@
 # IAM 검색기
 
+[API 문서](https://wesky93.github.io/iam-finder/#/aws/aws-iam-user)
 
 ## K8S 배포 방법
 k8s/secret.yaml 파일에 인증키 정보를 채워주세요
