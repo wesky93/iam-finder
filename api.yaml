@@ -1,0 +1,82 @@
+openapi: 3.0.3
+info:
+  title: resource resarch
+  description: cloud resource resarch API
+  version: 1.0.1
+servers:
+  - url: 'https'
+paths:
+  /iam/users/search/by_access_key_age:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/AccessKeyAge'
+      summary: 'IAM user search'
+      description: '액세스키 수명 N시간인 액세스키와 사용자를 검색합니다'
+      operationId: 'aws-iam-user'
+      responses:
+        '200':
+          description: 'IAMUserSearchResult'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IAMUserSearchResult'
+      tags:
+        - aws
+
+components:
+  parameters:
+    AccessKeyAge:
+      name: access_key_age
+      description: '액세스키 수명 - 단위는 시간 입니다'
+      in: query
+      required: true
+      schema:
+        type: integer
+  schemas:
+    AccessKey:
+      type: object
+      properties:
+        id:
+          type: string
+          description: "access key ID"
+        created_at:
+          type: string
+          format: datetime
+    User:
+      type: object
+      properties:
+        arn:
+          type: string
+          description: 'IAM user ARN'
+        name:
+          type: string
+          description: 'IAM user name'
+        created_at:
+          type: string
+          description: 'IAM user create date'
+          format: datetime
+        access_keys:
+          type: array
+          description: '수명이 요청한 시간보다 큰 액새스키 목록'
+          items:
+            $ref: '#/components/schemas/AccessKey'
+    SearchResultStatistics:
+      type: object
+      properties:
+        total_user_count:
+          type: integer
+          description: '총 사용자 수'
+        total_access_key_count:
+          type: integer
+          description: '총 액세스키 수'
+    IAMUserSearchResult:
+      type: object
+      properties:
+        results:
+          type: array
+          description: 'List of users'
+          items:
+            $ref: '#/components/schemas/User'
+        statistics:
+          $ref: '#/components/schemas/SearchResultStatistics'
+
