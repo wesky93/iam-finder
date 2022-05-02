@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iam-finder-depl
+  labels:
+    app: iam-finder
+spec:
+  selector:
+    matchLabels:
+      app: iam-finder
+  revisionHistoryLimit: 2
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: iam-finder
+    spec:
+      containers:
+        - name: iam-finder
+          image: 'wesky93/iam-finder:latest'
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: iam-finder-secret
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: iam-finder-secret
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: AWS_DEFAULT_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: iam-finder-secret
+                  key: AWS_DEFAULT_REGION
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '0.001'
+            limits:
+              memory: '256Mi'
+              cpu: '0.001'
